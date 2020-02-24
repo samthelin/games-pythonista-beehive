@@ -368,31 +368,32 @@ class Mushroom (ShapeNode):
 #The class that controls the running of the game. 
 class Game (Scene):
         def setup(self):
-                self.background_color = 'yellow'
-                self.time = 0
-                self.speed_limit = 3
-                self.buzzing = False
+                self.background_color = 'yellow' #Later replaced with the hexagonal background pattern 
+                self.time = 0 #Increased manually by one for each cycle of the update loop
+                self.speed_limit = 3 #The speed limit of the enemy bees
+                self.buzzing = False #Keeps track of whether the enemy bees have been stirred or not 
                 self.time_last_buzz = 0 
-                self.thunder = False
-                self.beebirth = True
-                self.flowergrowth = True
+                self.thunder = False #Keeps track of whether the enemy bees have been struck by a lightning power-up
+                self.beebirth = True #Keeps track of whether a bee can be born
+                self.flowergrowth = True #Keeps track of whether a flower can grow
                 self.flowerbirth = 0
-                self.flowercounter = 0 # Keep track of the number of flowers as there are two types
-                self.honeycombgrowth = True
+                self.flowercounter = 0 # Keeps track of the number of flowers as there are two types
+                self.honeycombgrowth = True #Keeps track of whether a honeycomb can appear 
                 self.honeycombbirth = 0
-                self.heartgrowth = True
+                self.heartgrowth = True #Keeps track of whether a heart can appear
                 self.heartbirth = 0
-                self.lightninggrowth = True
+                self.lightninggrowth = True #Keeps track of whether a lightning can appear
                 self.lightningbirth = 0
-                self.mushroomgrowth = True
+                self.mushroomgrowth = True #Keeps track of whether a mushroom can appear
                 self.mushroombirth = 0
+                
+                #Resets the iPhone's gyroscope used to move the player. 
                 self.gx = 0
                 self.gy = 0
                 self.factor_x = 1
                 self.factor_y = 1
-                #self.highscore = 0 
 
-                #The following two for-loops create the hexagonal background effect. 
+                #The following parameters and for-loops create the hexagonal background effect. 
                 m = 17
                 k = (m-1) * 2 * math.sqrt(3) + 2
                 r = self.size.w / k
@@ -453,10 +454,10 @@ class Game (Scene):
         
         #Resets all variables as a new game is being started. 
         def new_game(self):     
-                self.t = 0 #Manually updated for each cycle of the update loop. 
-                self.time = 0 #Time in seconds since the game started. 
-                self.speed_limit = 3
-                self.buzzing = False
+                self.t = 0 #Time in seconds since the game started 
+                self.time = 0 #Manually increased by one for each cycle of the update loop 
+                self.speed_limit = 3 #Speed limit of the enemy bees
+                self.buzzing = False 
                 self.time_last_buzz = 0 
                 self.thunder = False
                 self.time_last_thunder = 0
