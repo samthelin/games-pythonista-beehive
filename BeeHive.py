@@ -54,21 +54,26 @@ HEARTFREQUENCY = 90 #Determines how often a new heart appears
 LIGHTNINGFREQUENCY = 90 #Determines how often a new lightning appears
 MUSHROOMFREQUENCY = 100 #Determines how often a new mushroom appears
 
+#The class for the enemy bees. Each bee is represented by a yellow circle with a black centre. 
 class Bee (ShapeNode):
         def __init__(self, **kwargs):
                 ShapeNode.__init__(self, ui.Path.oval(0, 0, 0, 0), 'yellow', **kwargs) 
                 self.child = ShapeNode(ui.Path.oval(0, 0, 0, 0), 'black')
                 self.add_child(self.child)
+                
+                self.age = 0 
                 self.speedup = 0
                 self.speedright = 0
-                self.inHive = False
-                self.dying = False
-                self.dead = False
-                self.age = 0 
                 self.fully_grown = randint(150, 250)
                 self.entrance_x = 0
                 self.entrance_y = 0
-
+                self.inHive = False
+                self.dying = False
+                self.dead = False
+                
+        #This function controls how the enemy bees enter the hive. The bees grow gradually 
+        #to their fully grown size. This size is increased with time: Every 240 seconds, 
+        #another multiple of fully_grown is added to the size of the new-born bees.  
         def enter(self, time):
                 if not self.inHive:
                         if self.age < int((1 + (time / 240)) * self.fully_grown):
@@ -78,7 +83,10 @@ class Bee (ShapeNode):
                                 self.child.path = ui.Path.oval(0, 0, 0.05 * t, 0.05 * t)
                         else:
                                 self.inHive = True
-
+        
+        #This function controls the movement of the enemy bees. For every second cycle of the update loop, they change their
+        #velocity in a random fashion, dictated by BEESPEED. The function makes sure the bees do not exceed
+        #their speed limit, and that they do not move out of bounds. 
         def move(self, time, width, height, beeSpeedLimit):
                 if self.inHive and not self.dead:
                         t = time % 2
@@ -114,7 +122,11 @@ class Bee (ShapeNode):
                                 self.speedright = v
                                 self.speedup = w
                                 self.position += (v, w)
-
+        
+        #This function controls the dying of the enemey bees when they get hit by the 
+        #player with a flower power-up. When this happens, the enemy bee goes into a 
+        #tail spin and drops to the floor of the hive. As it hits the floor, a dust cloud
+        #rises and then evaporates. 
         def die(self, list):
                 if self.dying: 
                         r = self.age
@@ -148,22 +160,26 @@ class Bee (ShapeNode):
                                 self.run_action(Action.fade_to(0, 1))
                                 list.remove(self)
 
+#The class of the player, repsresented by a black circle with a yellow centre.                                 
 class Player (ShapeNode):
         def __init__(self, **kwargs):
                 ShapeNode.__init__(self, ui.Path.oval(0, 0, 20, 20), 'black', **kwargs) 
                 self.child = ShapeNode(ui.Path.oval(0, 0, 10, 10), 'yellow')
                 self.add_child(self.child)
+                
                 self.lives = PLAYERLIVES
                 self.honeycombscollected = 0
+                self.diameter = 20 #While self.size.x =21 - some sort of rounding error? 
+                self.age = 200 #Adapted from Bee class
+                self.fully_grown = 200 #Adapted from Bee class
                 self.immune = False
                 self.attack = False 
                 self.dying = False
                 self.half_dead = False
                 self.dead = False
-                self.diameter = 20 #while self.size.x =21 - some sort of rounding error? 
-                self.age = 200 #Adapted from Bee class
-                self.fully_grown = 200 #Adapted from Bee class
-
+                
+        #This function changes the size of the player as need in connection with 
+        #the mushroom and black flower power-ups. 
         def change_size(self, factor):
                 r = self.position.x
                 s = self.position.y
@@ -174,7 +190,9 @@ class Player (ShapeNode):
 
                 self.path = ui.Path.oval(r, s, X, X)
                 self.child.path = ui.Path.oval(r, s, Y, Y)
-
+        
+        #Same as the above function, but ensuring the dimensions of the 
+        #player are integers. 
         def change_size_int(self, factor):
                 r = self.position.x
                 s = self.position.y
@@ -188,7 +206,9 @@ class Player (ShapeNode):
 
         def change_death(self):
                 self.dead = True
-
+        
+        #This function controls the death of the player, after it has run out of lives. 
+        #Adapted from the correspoding function for the enemy bees above. 
         def die(self):
                 if self.dying: 
                         r = self.age
