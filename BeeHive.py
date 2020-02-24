@@ -631,6 +631,12 @@ class Game (Scene):
         def halve_player_size(self):
                 self.player.change_size(0.5)
                 self.update_player_size()
+        
+        #Relates the age and fully_grown attributes. This is used for the Player's 
+        #die method, to keep track of the size of the player as it dies. 
+        def update_player_size(self):
+                self.player.age = 10 * self.player.diameter
+                self.player.fully_grown = self.player.age
 
 
         def load_highscore(self):
@@ -644,12 +650,14 @@ class Game (Scene):
                 with open('.beehive_highscore', 'w') as f:
                         f.write(str(self.highscore))
 
-
         def check_lives(self):
                 if self.player.dead:
                         self.player.remove_from_parent()
                         self.game_over()
-
+        
+        #Creates a new bee. How often this happens (in seconds) is controlled by BEEFREQUENCY.  
+        #The self.beebirth boolean is used to make sure that only one bee (and not ~60) is created
+        #each time (self.t changes only once in 60 update cycles). 
         def spawn_bee(self):
                 t = int(self.t) % BEEFREQUENCY
                 if t == 1 and self.beebirth:
@@ -661,7 +669,10 @@ class Game (Scene):
                         self.beebirth = False
                 elif t == 2:
                         self.beebirth = True
-
+        
+        #Controls the forming of a flower power-up. The self.flowerbirth attribute 
+        #sees to that one flower forms in every time window of FLOWERFREQENCY seconds, 
+        #and that there is a random element to when the flower forms in this time span. 
         def grow_flower(self):
                 t = int(self.t) % FLOWERFREQUENCY
                 if t == 0:
@@ -684,7 +695,10 @@ class Game (Scene):
                                 flower.position = (r, s)
                                 flower.birthtime = self.t
                                 self.flowers.append(flower)
-
+        
+        #Controls the forming of a honeycomb. The self.honeycombbirth attribute 
+        #sees to that one honeycomb forms in every time window of HONEYCOMBFREQENCY seconds, 
+        #and that there is a random element to when the honeycomb forms in this time span.
         def grow_honeycomb(self):
                 t = int(self.t) % HONEYCOMBFREQUENCY
                 if t == 0:
@@ -699,6 +713,9 @@ class Game (Scene):
                         self.honeycombs.append(honeycomb)
                         self.honeycombgrowth = False
 
+        #Controls the forming of a heart power-up. The self.heartbirth attribute 
+        #sees to that one heart forms in every time window of HEARTFREQENCY seconds, 
+        #and that there is a random element to when the heart forms in this time span.                        
         def grow_heart(self):
                 t = int(self.t) % HEARTFREQUENCY
                 if t == 0:
@@ -713,7 +730,9 @@ class Game (Scene):
                         self.hearts.append(heart)
                         self.heartgrowth = False
 
-
+        #Controls the forming of a lightning power-up. The self.lightningbirth attribute 
+        #sees to that one lightning forms in every time window of LIGHTNINGFREQENCY seconds, 
+        #and that there is a random element to when the lightning forms in this time span.
         def grow_lightning(self):
                 t = int(self.t) % LIGHTNINGFREQUENCY
                 if t == 0:
@@ -728,7 +747,9 @@ class Game (Scene):
                         self.lightnings.append(lightning)
                         self.lightninggrowth = False
 
-
+        #Controls the forming of a mushroom power-up. The self.mushroombirth attribute 
+        #sees to that one mushroom forms in every time window of MUSHROOMFREQENCY seconds, 
+        #and that there is a random element to when the mushroom forms in this time span.
         def grow_mushroom(self):
                 t = int(self.t) % MUSHROOMFREQUENCY
                 if t == 0:
@@ -742,34 +763,36 @@ class Game (Scene):
                         mushroom.birthtime = self.t
                         self.mushrooms.append(mushroom)
                         self.mushroomgrowth = False
-
-
-        def update_player_size(self):
-                self.player.age = 10 * self.player.diameter
-                self.player.fully_grown = self.player.age
-
+        
+        #The enemy bees fly at increased speed for five seconds when provoked. 
         def check_buzz(self):
                 if self.buzzing and self.t - self.time_last_buzz > 5:
                         self.speed_limit = 3
                         self.buzzing = False
-
+        
+        #The enemy bees are pacified for 7 seconds when hit by lightning. 
         def check_thunder(self):
                 if self.thunder and self.t - self.time_last_thunder > 7:
                         self.speed_limit = 3
                         self.thunder = False
-
+        
+        #When the player is immune, he is not harmed by the enemy bees. 
         def change_immunity(self):
                 if self.player.immune:
                         self.player.immune = False
                 else:
                         self.player.immune = True               
-
+        
+        #When the player is in attack mode, it can kill off the enemy bees. 
         def change_attack(self):
                 if self.player.attack:
                         self.player.attack = False
                 else:
                         self.player.attack = True       
-
+        
+        #This method controls whether the player has collided with any of the enemy bees. If this is the case, and the player
+        #is not immune or in attack mode, nor dying, and the enemy bee is also not dying, then the player loses a life and 
+        #the enemy bees get stirred and so move faster for a limited period of time. 
         def bee_collision(self, bnode):
                 v1 = Vector2(self.player.position.x, self.player.position.y)
                 v2 = Vector2(bnode.position.x, bnode.position.y)
@@ -790,7 +813,9 @@ class Game (Scene):
                                 if self.lives == 0:
                                         sound.play_effect('arcade:Jump_1')
                                         self.player.dying = True
-
+        
+        #This method controls whether the player has collided with any of the enemy bees. If this is the case, and the player
+        #is in attack mode (and if the enemy bee in question has fully entered the hive, and is not dying), then the enemy bee dies.  
         def bee_collision2(self, bnode):
                 v1 = Vector2(self.player.position.x, self.player.position.y)
                 v2 = Vector2(bnode.position.x, bnode.position.y)                        
@@ -798,7 +823,9 @@ class Game (Scene):
                 if abs(v1 - v2) < 0.5 * (self.player.size.x + bnode.size.x) and bnode.inHive and self.player.attack and not bnode.dying: 
                         sound.play_effect('arcade:Laser_2')
                         bnode.dying = True
-
+        
+        #Controls if the player has collided with a flower power-up. In this case, the attack mode is initiated, the 
+        #consequences of which depend on if the flower was white or red. 
         def flower_collision(self, flower):
                 v1 = Vector2(self.player.position.x, self.player.position.y)
                 v2 = Vector2(flower.position.x, flower.position.y)                      
@@ -816,7 +843,8 @@ class Game (Scene):
 
                         self.player.child.run_action(Action.sequence(actions))
 
-
+        #Checks if the player has collided with a honeycomb. In this case, the score is being updated. 
+        #For every second honeycomb collected, the player grows in size. 
         def honeycomb_collision(self, honeycomb):
                 v1 = Vector2(self.player.position.x, self.player.position.y)
                 v2 = Vector2(honeycomb.position.x, honeycomb.position.y)                        
