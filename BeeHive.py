@@ -455,8 +455,8 @@ class Game (Scene):
         #Resets all variables as a new game is being started. 
         def new_game(self):     
                 self.t = 0 #Time in seconds since the game started 
-                self.time = 0 #Manually increased by one for each cycle of the update loop 
-                self.speed_limit = 3 #Speed limit of the enemy bees
+                self.time = 0  
+                self.speed_limit = 3
                 self.buzzing = False 
                 self.time_last_buzz = 0 
                 self.thunder = False
@@ -467,16 +467,15 @@ class Game (Scene):
                 self.heartgrowth = True
                 self.lightninggrowth = True
                 self.mushroomgrowth = True
+                
                 self.gx = 0
                 self.gy = 0
                 self.factor_x = 1
                 self.factor_y = 1
-                self.player = Player(parent=self)
-                #self.player.alpha = 1
+                
+                self.player = Player(parent=self) #Initializes the player
                 self.player.position = (self.size.w/2, self.size.h / 2)
-                #self.player.dying = False
-                #self.player.dead = False
-                #self.player.age = 200
+                
                 for b in self.bees:
                         b.remove_from_parent()
                 self.bees = []
@@ -499,16 +498,12 @@ class Game (Scene):
                         m.remove_from_parent()
                 self.mushrooms = []
 
-
-
                 self.score = 0
                 self.lives = PLAYERLIVES
-
-
                 self.score_label.text = str(self.score)
                 self.lives_label.text = str(self.lives)
 
-
+        #The update()-method updates the screen approximately 60 times per second. 
         def update(self):
                 self.set_position()
                 self.update_player2()
@@ -521,7 +516,7 @@ class Game (Scene):
                 self.grow_lightning()
                 self.grow_mushroom()
                 self.check_lives()
-
+                
                 self.player.die()
 
                 for bee in self.bees:
@@ -551,14 +546,10 @@ class Game (Scene):
                         self.mushroom_collision(mushroom)
                         mushroom.die(self.mushrooms, self.t)
 
-
                 self.time += 1          
-
-#               if self.time < 60:
-        #               self.time += 1
-#               else:
-#                       self.time = 0
-
+        
+        #This function allows the collected thunderbolts in the bottom left corner of the screen
+        #to be tapped, whereupon the enemy bees get pacified for an amount of time. 
         def touch_began(self, touch):
                 p = touch.location
 
@@ -568,9 +559,9 @@ class Game (Scene):
                                 T.run_action(Action.fade_to(0, 0.1))
                                 self.thunderbolts.remove(T)     
                                 self.sort_thunderbolts()
-
-
-
+        
+        #Primitve method for moving the player. Not used in this version of the game. 
+        #The updated method is shown below. 
         def update_player(self):
                 g = gravity()
                 x = self.player.position.x
@@ -586,7 +577,12 @@ class Game (Scene):
                 x = max(0, min(self.size.w, x + randint(-1, 1)))
                 y = max(0, min(self.size.h, y + randint(-1, 1)))
                 self.player.position = (x, y)
-
+        
+        #The updated method for moving the player with the help of the iPhone's
+        #built-in gyroscope and accelerometer. By using the set_position method, 
+        #the player can be moved conveniently irrespective of the inital positioning 
+        #of the phone. There is a max speed applying horizontally and vertically and 
+        #the player cannot move out of the bounds of the screen. 
         def update_player2(self):
                 if not self.player.half_dead:
                         g = gravity()
@@ -613,7 +609,10 @@ class Game (Scene):
                         y = max(0, min(self.size.h, y + randint(-1, 1)))
                         self.player.position = (x, y)
 
-
+        #This method makes sure the game can be played irrespective of the 
+        #position of the phone when starting a new game, i.e. the starting 
+        #position of the phone is seen as the neutral position where the 
+        #player is not moving. 
         def set_position(self):
                 if self.time == 0:
                         g = gravity()
