@@ -1,5 +1,5 @@
 """
-BeeHive, a game for the iPhone. 
+BeeHive, a game for the iPhone based on the Scene module in Pythonista. 
 
 You play as a bee in an enemy beehive, 
 trying to collect as many honeycombs as possbile while avoiding the enemy 
@@ -365,17 +365,15 @@ class Mushroom (ShapeNode):
                         list.remove(self)               
 
 
-
+#The class that controls the running of the game. 
 class Game (Scene):
         def setup(self):
                 self.background_color = 'yellow'
-                #self.floor = SpriteNode('IMG_8030.PNG')
                 self.time = 0
                 self.speed_limit = 3
                 self.buzzing = False
                 self.time_last_buzz = 0 
                 self.thunder = False
-                self.time_last_buzz = 0
                 self.beebirth = True
                 self.flowergrowth = True
                 self.flowerbirth = 0
@@ -394,6 +392,7 @@ class Game (Scene):
                 self.factor_y = 1
                 #self.highscore = 0 
 
+                #The following two for-loops create the hexagonal background effect. 
                 m = 17
                 k = (m-1) * 2 * math.sqrt(3) + 2
                 r = self.size.w / k
@@ -415,8 +414,7 @@ class Game (Scene):
 
 
 
-                #self.player = Player(parent=self)
-                #self.player.position = (self.size.w/2, self.size.h / 2)
+                #Lists for the enemy bees, honeycombs and power-ups. 
                 self.bees = []
                 self.flowers = []
                 self.honeycombs = []
@@ -424,7 +422,9 @@ class Game (Scene):
                 self.lightnings =[]
                 self.thunderbolts = []
                 self.mushrooms = []
-
+                
+                #The following block creates the counters for the number of collected honeycombs
+                #and the number of lives left shown in the top left corner of the screen. 
                 self.score = 0
                 self.lives = PLAYERLIVES
                 score_font = ('Futura',15)
@@ -440,7 +440,7 @@ class Game (Scene):
                 self.heart.position = (30, self.size.h - 45)
                 self.heart.z_position = 2
                 self.score_label = LabelNode('0', score_font, parent=self, color = 'black')
-                self.lives_label = LabelNode('5', lives_font, parent=self, color = 'black')
+                self.lives_label = LabelNode('5', lives_font, parent=self, color = 'black') #This is set to PLAYERLIVES for each new game. 
                 #self.score_label.anchor_point = (0,0)
                 #self.lives_label.anchor_point = (0,0)
                 self.score_label.position = (55, self.size.h - 20)
@@ -450,10 +450,11 @@ class Game (Scene):
 
                 self.load_highscore()
                 self.show_start_menu()
-
+        
+        #Resets all variables as a new game is being started. 
         def new_game(self):     
-                self.t = 0
-                self.time = 0
+                self.t = 0 #Manually updated for each cycle of the update loop. 
+                self.time = 0 #Time in seconds since the game started. 
                 self.speed_limit = 3
                 self.buzzing = False
                 self.time_last_buzz = 0 
