@@ -245,7 +245,8 @@ class Player (ShapeNode):
                                 self.run_action(Action.sequence(actions))
 
 
-
+#This is the class for the flower power-up, enabling the player to go into attack mode and 
+#kill the enemy bees. The flower is represented by a yellow centre surrounded by five petals. 
 class Flower (ShapeNode):
         def __init__(self, farbe, **kwargs):
                 ShapeNode.__init__(self, ui.Path.oval(0, 0, 8, 8), 'black', **kwargs) 
@@ -253,8 +254,10 @@ class Flower (ShapeNode):
                 self.farbe = farbe 
 
                 self.birthtime = 0
-                self.dead = False 
                 self.z_position = 0.5
+                
+                self.dead = False 
+                
 
                 petals = []
 
@@ -266,13 +269,14 @@ class Flower (ShapeNode):
                 cen = ShapeNode(ui.Path.oval(0, 0, 5,5), 'yellow')
                 self.add_child(cen)
 
-
+        
+        #This function removes the flower if it is picked up, or if it is not picked up within a given time. 
         def die(self, list, time):
                 if time - self.birthtime > 3:
                         self.run_action(Action.fade_to(0, 0.1))
                         list.remove(self)
 
-
+#This is the class for the honeycombs. The aim of the game is for the player to collect these. 
 class Honeycomb (ShapeNode):
         def __init__(self, **kwargs):
                 SpriteNode.__init__(self,'pzl:Yellow5', **kwargs)
@@ -280,74 +284,81 @@ class Honeycomb (ShapeNode):
                 self.size = (12, 12)
 
                 self.birthtime = 0
-                self.dead = False 
                 self.z_position = 0.5
+                self.dead = False 
 
-
+        #This function removes the honeycomb if it is picked up, or if it is not picked up within a given time. 
         def die(self, list, time):
                 if time - self.birthtime > 5:
                         self.run_action(Action.fade_to(0, 0.1))
                         list.remove(self)               
 
+#This is the class for the heart. Collecting a heart gives an extra life.                        
 class Heart (ShapeNode):
         def __init__(self, **kwargs):
                 SpriteNode.__init__(self,'plc:Heart', **kwargs)
 
                 self.size = (15,23)
 
-                self.birthtime = 0
-                self.dead = False 
+                self.birthtime = 0 
                 self.z_position = 0.5
+                self.dead = False
 
-
+        #This function removes the heart if it is picked up, or if it is not picked up within a given time.
         def die(self, list, time):
                 if time - self.birthtime > 5:
                         self.run_action(Action.fade_to(0, 0.1))
                         list.remove(self)               
-
+#This is the class of the lightning power-up. 
 class Lightning (ShapeNode):
         def __init__(self, **kwargs):
                 SpriteNode.__init__(self,'spc:BoltGold', **kwargs)
 
                 self.size = (15,23)
 
-                self.birthtime = 0
-                self.dead = False 
+                self.birthtime = 0 
                 self.z_position = 0.5
+                self.dead = False
 
-
+        #This function removes the lightning if it is picked up, or if it is not picked up within a given time.
         def die(self, list, time):
                 if time - self.birthtime > 5:
                         self.run_action(Action.fade_to(0, 0.1))
                         list.remove(self)               
 
+#This class is for the thunderbolt. This is used to keep track of the number of lighnings currently
+#in the player's possesion. This is indicated in the bottom left of the screen. Pressing the symbol 
+#of a thunderbolt stuns the enemy bees. 
 class Thunderbolt (ShapeNode):
         def __init__(self, **kwargs):
                 SpriteNode.__init__(self,'emj:High_Voltage_Sign', **kwargs)
 
                 self.size = (35,40)
 
-                self.birthtime = 0
-                self.dead = False 
+                self.birthtime = 0 
                 self.z_position = 0.5
+                self.dead = False
 
-
+        #This function removes the thunderbolt when it is being tapped to release the lightning. 
         def die(self, list, time):
                 if time - self.birthtime > 5:
                         self.run_action(Action.fade_to(0, 0.1))
                         list.remove(self)               
 
+#This is the class of the mushroom. Collecting a mushroom makes the player halve in size, 
+#and so makes it easier to avoid the enemy bees, but also more difficult to bring them down
+#when a flower has been collected. 
 class Mushroom (ShapeNode):
         def __init__(self, **kwargs):
                 SpriteNode.__init__(self,'plf:Tile_MushroomRed', **kwargs)
 
                 self.size = (35,40)
 
-                self.birthtime = 0
-                self.dead = False 
+                self.birthtime = 0 
                 self.z_position = 0.5
+                self.dead = False
 
-
+        #This function removes the mushroom if it is picked up, or if it is not picked up within a given time.
         def die(self, list, time):
                 if time - self.birthtime > 5:
                         self.run_action(Action.fade_to(0, 0.1))
