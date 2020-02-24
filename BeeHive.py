@@ -20,10 +20,10 @@ There are various power-ups to aid you:
 
 Heart: An extra life. 
 
-Pink flower: Enables you to kill the enemy bees by colliding with them. This 
+White flower: Enables you to kill the enemy bees by colliding with them. This 
 power-up only lasts for a limited time, indicated by your character blinking. 
 
-Black flower: Like a pink flower, only you also dobules in size for the duration 
+Red flower: Like a pink flower, only you also dobules in size for the duration 
 of the power-up, making it easier to kill of the enemy. 
 
 Lightning: When you collect a lightning, it is visible at the bottom left of the screen. 
@@ -832,7 +832,7 @@ class Game (Scene):
 
                 if abs(v1 - v2) < 0.5 * (self.player.size.x + flower.size.x): 
                         flower.run_action(Action.fade_to(0, 0.1))
-                        flower.birthtime = 0
+                        flower.birthtime = -10
                         sound.play_effect('arcade:Powerup_1')
                         self.player.attack = True
 
@@ -870,7 +870,9 @@ class Game (Scene):
                         if self.score > self.highscore:
                                 self.highscore = self.score
                                 self.save_highscore()
-
+        
+        #Checks if the player has collided with a heart power-up. In this case, the number of lives
+        #is increased by one. 
         def heart_collision(self, heart):
                 v1 = Vector2(self.player.position.x, self.player.position.y)
                 v2 = Vector2(heart.position.x, heart.position.y)                        
@@ -882,6 +884,9 @@ class Game (Scene):
                         self.lives_label.text = str(self.lives)
                         sound.play_effect('arcade:Powerup_3')
 
+        #Checks if the player has collided with a lightning power-up. If this is the case, 
+        #a thunderbolt is added in the bottom left corner. This can then be tapped to 
+        #release thunder that pacifies the enemy bees. 
         def lightning_collision(self, lightning):
                 v1 = Vector2(self.player.position.x, self.player.position.y)
                 v2 = Vector2(lightning.position.x, lightning.position.y)                        
@@ -895,7 +900,9 @@ class Game (Scene):
                         #thunderbolt.position = (100, 100)
                         self.thunderbolts.append(thunderbolt)
                         self.sort_thunderbolts()
-
+        
+        #Checks if the player has collided with a mushroom power-up. If this is the case, 
+        #the player halves in size. 
         def mushroom_collision(self, mushroom):
                 v1 = Vector2(self.player.position.x, self.player.position.y)
                 v2 = Vector2(mushroom.position.x, mushroom.position.y)                  
@@ -907,12 +914,14 @@ class Game (Scene):
                         self.halve_player_size()
                         self.update_player_size()
 
-
+        #Realings the positions of the thunderbolts in the bottom left corner as one 
+        #has been used. 
         def sort_thunderbolts(self):
                 for T in self.thunderbolts:
                         T.position = (20 + self.thunderbolts.index(T) * 30, 20)
 
-
+        #When the thunder is released, the enemy bees are pacified, int that their max speed
+        #goes down. 
         def release_thunder(self):
                         self.speed_limit = 0.5
                         self.thunder = True
