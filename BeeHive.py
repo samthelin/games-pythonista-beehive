@@ -1,3 +1,39 @@
+"""
+BeeHive, a game for the iPhone. 
+
+You play as a bee in an enemy beehive, 
+trying to collect as many honeycombs as possbile while avoiding the enemy 
+bees which are entering the hive at regular time intervals. 
+
+You control 
+the friendly bee with the help of the iPhone's built-in accelerometer and 
+gyroscope.
+
+You lose a life everytime you collide with an enemy bee. This also stirs the enemy bees 
+and they start flying faster for a limited time. Directly after such a collision 
+you are immune to the enemy bees, indicated by the fact that your character is blinking. 
+
+You grow in size each time you collect a honeycomb. The enemey bees entering the hive also 
+increase in size with time. 
+
+There are various power-ups to aid you: 
+
+Heart: An extra life. 
+
+Pink flower: Enables you to kill the enemy bees by colliding with them. This 
+power-up only lasts for a limited time, indicated by your character blinking. 
+
+Black flower: Like a pink flower, only you also dobules in size for the duration 
+of the power-up, making it easier to kill of the enemy. 
+
+Lightning: When you collect a lightning, it is visible at the bottom left of the screen. 
+As you tap it, the enemy bees stop moving for a limited time. 
+
+Mushroom: Halves your size. 
+
+The high score is being saved and updated when beaten. 
+"""
+
 from scene import *
 from random import *
 import random
@@ -5,15 +41,18 @@ import math
 import sound
 from menus import MenuScene
 
-BEESPEED = 1
-BEEFREQUENCY = 4
-PLAYERLIVES = 3
-PLAYERHONEYS = 20
-FLOWERFREQUENCY = 40
-HONEYCOMBFREQUENCY = 6
-HEARTFREQUENCY = 90
-LIGHTNINGFREQUENCY = 90
-MUSHROOMFREQUENCY = 100
+#The following constants determine the basic game parameters for the bees and the power-ups. 
+
+PLAYERLIVES = 3 
+
+BEESPEED = 1 #Determines the amount with which the enemy bees change their speed at a given time step 
+BEEFREQUENCY = 4 #Determines how often a new enemy bee appears
+
+FLOWERFREQUENCY = 40 #Determines how often a new flower appears
+HONEYCOMBFREQUENCY = 6 #Determines how often a new honeycomb appears
+HEARTFREQUENCY = 90 #Determines how often a new heart appears
+LIGHTNINGFREQUENCY = 90 #Determines how often a new lightning appears
+MUSHROOMFREQUENCY = 100 #Determines how often a new mushroom appears
 
 class Bee (ShapeNode):
         def __init__(self, **kwargs):
